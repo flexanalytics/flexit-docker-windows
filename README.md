@@ -44,7 +44,50 @@ or on windows
 ### 3. Access FlexIt
 Visit the application at:
 - **First Install**: `http://localhost:<FLEXIT_PORT>`
-- **After Optionally Configuring SSL**: `https://DNS_NAME`
+- **After Optionally Configuring SSL (below)**: `https://DNS_NAME`
+
+---
+
+## Configuring the application for production use
+
+### Configure SSL
+
+1. Provide a certificate and key file. These files should be placed in a `certs` folder in the `flex_config` directory.
+- The files should be named `certificate.pem` and `privatekey.pem`.
+
+> [!NOTE] 
+> You will have to restart the application after adding the certificate and key files.
+
+```sh
+./scripts/restart_server.sh
+# or
+docker compose down
+docker compose up -d
+```
+
+After restarting the server, an administrator can navigate to Configuration > Server Settings and add the Host Name, as well as change the port to 443 and enable ssl.
+
+![Server Settings](https://github.com/user-attachments/assets/1b2399d6-2a88-4fd4-b125-d531654ab08a)
+
+
+![SSL Settings](https://github.com/user-attachments/assets/3fe63d24-f5f0-40d9-b817-c8e21eb16d21)
+
+3. Update the `FLEXIT_PORT` in `.env` to use port 443.
+
+```dotenv
+## -- frontend app setup -- ##
+FLEXIT_PORT=443
+```
+4. Restart the application again.
+
+```sh 
+./scripts/restart_server.sh
+# or
+docker compose down
+docker compose up -d
+```
+
+5. Access the application at `https://<dns_name_in_settings>`.
 
 ---
 
@@ -53,7 +96,13 @@ Visit the application at:
 ### Viewing Logs
 To view logs for the FlexIt Frontend:
 ```bash
-docker logs <container_name>
+docker logs flexit-analytics  # container logs
+docker exec -it flexit-analytics sh -c 'tail -f $(ls -t /opt/flexit/logs/flexit_*.log | head -n 1)'  # most recent application log file
+```
+
+To view logs for the FlexIt Backend:
+```bash
+docker logs flexit-content-database  # container logs
 ```
 
 ### Stopping the Application
