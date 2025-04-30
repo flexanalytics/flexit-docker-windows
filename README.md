@@ -34,10 +34,6 @@ You may need to reboot the server if docker was not previously installed.
 
 call the below start script to start the application
 ```bash
-./scripts/start_server.sh
-```
-or on windows
-```bash
 ./scripts/start_server.bat
 ```
 
