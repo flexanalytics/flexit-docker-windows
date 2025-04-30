@@ -1,0 +1,26 @@
+services:
+  flexit-content-database:
+    platform: windows/amd64
+    container_name: flexit-content-database
+    image: ghcr.io/flexanalytics/flexit-content-database-windows:${CONTENT_DB_VERSION}
+    pull_policy: always
+    restart: unless-stopped
+    networks:
+      - flexit-network
+    ports:
+      - "${DB_PORT}:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres_data:C:\pgsql\data
+
+volumes:
+  postgres_data:
+    name: postgres_data
+
+networks:
+  flexit-network:
+    name: flexit-network
+    driver: nat

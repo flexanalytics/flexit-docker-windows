@@ -8,38 +8,18 @@ services:
       context: .
       dockerfile: Dockerfile.flexit
     image: ghcr.io/flexanalytics/flexit-windows:${FLEXIT_VERSION}
-    pull_policy: always
+    pull_policy: missing
     restart: unless-stopped
     environment:
       DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@flexit-content-database:5432/${DB_NAME}
     ports:
-      - "${FLEXIT_PORT}:${FLEXIT_PORT}"
+      - "${FLEXIT_PORT}:3030"
     volumes:
       - "flexit_config:C:/FlexIt/config"
       - "flexit_datasets:C:/FlexIt/datasets"
       - "flexit_deployments:C:/FlexIt/deployments"
       - "flexit_logs:C:/FlexIt/logs"
       - "flexit_webcontent:C:/FlexIt/webcontent"
-
-  flexit-content-database:
-    platform: windows/amd64
-    container_name: flexit-content-database
-    build:
-      context: .
-      dockerfile: Dockerfile.postgres
-    image: ghcr.io/flexanalytics/flexit-content-database-windows:${CONTENT_DB_VERSION}
-    pull_policy: always
-    restart: unless-stopped
-    networks:
-      - flexit-network
-    ports:
-      - "${DB_PORT}:5432"
-    environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
-    volumes:
-      - postgres_data:C:\pgsql\data
 
 volumes:
   flexit_config:
@@ -52,11 +32,8 @@ volumes:
     name: flexit_logs
   flexit_webcontent:
     name: flexit_webcontent
-  postgres_data:
-    name: postgres_data
 
 networks:
   flexit-network:
     name: flexit-network
     driver: nat
-
