@@ -1,0 +1,57 @@
+
+# Use Windows Server LTSC 2022 as the base image
+FROM mcr.microsoft.com/windows/server:ltsc2022
+
+# Set environment variables
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+
+ENV PYTHONIOENCODING=UTF-8
+ENV PYTHONUNBUFFERED=1
+
+# Should FlexIt create a content database?
+ENV FLEXIT_DB=0
+
+# Install Chocolatey for package management
+RUN Set-ExecutionPolicy Bypass -Scope Process -Force; \
+    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+# Refresh environment variables so Chocolatey is recognized
+RUN $env:Path += ';C:\ProgramData\chocolatey\bin'; \
+    Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1; \
+    refreshenv
+
+# Install required dependencies
+RUN choco install -y \
+    git \
+    python312 \
+    curl \
+    vcredist140 \
+    unzip \
+    openjdk17
+
+# Set up Python environment
+RUN python -m pip install --upgrade pip
+RUN python -m pip install --no-cache-dir \
+        "git+https://github.com/flexanalytics/dbt-sqlserver.git@remove-dbt-upper-bound" \
+        "dbt-core~=1.9.0"
+
+# Set working directory
+WORKDIR "C:\FlexIt\bin"
+
+# Install Sling for data ingestion
+RUN Invoke-WebRequest -Uri "https://github.com/slingdata-io/sling-cli/releases/download/v1.4.1/sling_windows_amd64.tar.gz" -OutFile "C:\sling.tar.gz"; \
+    tar -xzf "C:\sling.tar.gz" -C "C:\Windows\System32"; \
+    Remove-Item -Path "C:\sling.tar.gz"
+
+# Install FlexIt
+RUN Invoke-WebRequest -Uri "https://github.com/flexanalytics/flexit-deploy/releases/download/2025.04.005/flexit-windows-x64-installer.exe" -OutFile "C:\flexit-installer.exe"
+
+RUN Start-Process -Wait -FilePath "C:\flexit-installer.exe" -ArgumentList "--mode", "unattended", "--flex_default_db", "0", "--prefix", "C:\FlexIt"; \
+    Remove-Item -Path "C:\flexit-installer.exe"
+
+# Expose application port
+EXPOSE 3030
+
+COPY flexit-entrypoint.ps1 "C:\entrypoint.ps1"
+
+ENTRYPOINT ["powershell", "-File", "C:\\entrypoint.ps1"]
