@@ -7,6 +7,7 @@ cd /d %~dp0
 REM Default compose files
 set COMPOSE_FILES=-f docker-compose.yml
 
+cd ..
 REM Read .env and check USE_CONTENT_DB_CONTAINER
 for /f "usebackq tokens=1,2 delims==" %%a in (".env") do (
     if /i "%%a"=="USE_CONTENT_DB_CONTAINER" (
@@ -23,5 +24,5 @@ if /i "!USE_CONTENT_DB_CONTAINER!"=="true" (
 )
 
 echo Starting services
-cd ..
+
 docker-compose %COMPOSE_FILES% up --build -d
