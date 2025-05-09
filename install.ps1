@@ -19,7 +19,7 @@ Write-Host "`n--- Installing Docker Compose ---" -ForegroundColor Yellow
 
 # Install FlexIt
 Write-Host "`n--- Building and Starting Server ---" -ForegroundColor Yellow
-docker-compose up --build -d | ForEach-Object { Write-Host $_ }
+& docker-compose up --pull missing -d
 
 # Load .env variables
 $envFile = ".env"
