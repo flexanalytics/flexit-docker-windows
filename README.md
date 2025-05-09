@@ -55,10 +55,10 @@ Visit the application at:
 > You will have to restart the application after adding the certificate and key files.
 
 ```sh
-./scripts/restart_server.sh
+./scripts/restart_server.ps1
 # or
-docker compose down
-docker compose up -d
+docker-compose down
+docker-compose up -d
 ```
 
 After restarting the server, an administrator can navigate to Configuration > Server Settings and add the Host Name, as well as change the port to 443 and enable ssl.
@@ -77,10 +77,10 @@ FLEXIT_PORT=443
 4. Restart the application again.
 
 ```sh 
-./scripts/restart_server.sh
+./scripts/restart_server.ps1
 # or
-docker compose down
-docker compose up -d
+docker-compose down
+docker-compose up -d
 ```
 
 5. Access the application at `https://<dns_name_in_settings>`.
