@@ -14,7 +14,9 @@ if (Test-Path $dest) {
     Write-Host "Installed version: $installedVersion"
 } else {
     Write-Host "Downloading Docker Compose..."
+    $ProgressPreference = 'SilentlyContinue'
     Invoke-WebRequest -Uri $source -OutFile $dest -UseBasicParsing
+    $ProgressPreference = 'Continue'
     Write-Host "Download complete."
 }
 
