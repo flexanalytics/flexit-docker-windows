@@ -1,6 +1,9 @@
 @echo off
 setlocal enabledelayedexpansion
 
+:: Change to script directory
+cd /d %~dp0
+
 REM Default compose files
 set COMPOSE_FILES=-f docker-compose.yml
 
@@ -20,4 +23,5 @@ if /i "!USE_CONTENT_DB_CONTAINER!"=="true" (
 )
 
 echo Starting services
+cd ..
 docker-compose %COMPOSE_FILES% up --build -d
