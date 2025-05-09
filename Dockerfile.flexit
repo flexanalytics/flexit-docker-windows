@@ -39,12 +39,12 @@ RUN python -m pip install --no-cache-dir \
 WORKDIR "C:\FlexIt\bin"
 
 # Install Sling for data ingestion
-RUN Invoke-WebRequest -Uri "https://github.com/slingdata-io/sling-cli/releases/download/v1.2.13/sling_windows_amd64.tar.gz" -OutFile "C:\sling.tar.gz"; \
+RUN Invoke-WebRequest -Uri "https://github.com/slingdata-io/sling-cli/releases/download/v1.4.6/sling_windows_amd64.tar.gz" -OutFile "C:\sling.tar.gz"; \
     tar -xzf "C:\sling.tar.gz" -C "C:\Windows\System32"; \
     Remove-Item -Path "C:\sling.tar.gz"
 
 # Install FlexIt
-RUN Invoke-WebRequest -Uri "https://github.com/flexanalytics/flexit-deploy/releases/download/2025.04.005/flexit-windows-x64-installer.exe" -OutFile "C:\flexit-installer.exe"
+RUN Invoke-WebRequest -Uri "https://github.com/flexanalytics/flexit-deploy/releases/download/2025.05.001/flexit-windows-x64-installer.exe" -OutFile "C:\flexit-installer.exe"
 
 RUN Start-Process -Wait -FilePath "C:\flexit-installer.exe" -ArgumentList "--mode", "unattended", "--flex_default_db", "0", "--prefix", "C:\FlexIt"; \
     Remove-Item -Path "C:\flexit-installer.exe"
