@@ -44,7 +44,7 @@ RUN Invoke-WebRequest -Uri "https://github.com/slingdata-io/sling-cli/releases/d
     Remove-Item -Path "C:\sling.tar.gz"
 
 # Install FlexIt
-RUN Invoke-WebRequest -Uri "https://github.com/flexanalytics/flexit-deploy/releases/download/2025.05.001/flexit-windows-x64-installer.exe" -OutFile "C:\flexit-installer.exe"
+RUN Invoke-WebRequest -Uri "https://github.com/flexanalytics/flexit-deploy/releases/latest/download/flexit-windows-x64-installer.exe" -OutFile "C:\flexit-installer.exe"
 
 RUN Start-Process -Wait -FilePath "C:\flexit-installer.exe" -ArgumentList "--mode", "unattended", "--flex_default_db", "0", "--prefix", "C:\FlexIt"; \
     Remove-Item -Path "C:\flexit-installer.exe"
